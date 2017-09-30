@@ -17,7 +17,7 @@ import com.twitter.sdk.android.core.TwitterConfig;
  * for accessing the relevant rest client.
 \\
 
- *     RestClient client = Application.getRestClient();
+ *     TwitterClient client = Application.getRestClient();
  *     // use client to send requests to API
  *
  */
@@ -42,7 +42,7 @@ public class Application extends android.app.Application {
 
 	}
 
-	public static RestClient getRestClient() {
-		return (RestClient) RestClient.getInstance(RestClient.class, Application.context);
+	public static TwitterClient getRestClient() {
+		return (TwitterClient) TwitterClient.getInstance(TwitterClient.class, Application.context);
 	}
 }
