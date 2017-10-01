@@ -13,5 +13,10 @@
     <dimen name="count_width">60dp</dimen>
     <dimen name="text_tweet">12sp</dimen>
     <dimen name="tweet_image">135dp</dimen>
+    <dimen name="tweet_image_details">150dp</dimen>
+    <dimen name="tweet_retly">12sp</dimen>
+    <dimen name="text_tweet_det">14dp</dimen>
+    <dimen name="timestamp_tweet">11sp</dimen>
+    <dimen name="height_count">23dp</dimen>
 
 </resources>

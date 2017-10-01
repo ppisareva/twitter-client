@@ -14,6 +14,8 @@
     <string name="tweet">tweet</string>
     <string name="up_to_date">Your tweets are up to date</string>
     <string name="send">send</string>
+    <string name="retweet"> retweets</string>
+    <string name="liked"> favourite</string>
 
 
 </resources>

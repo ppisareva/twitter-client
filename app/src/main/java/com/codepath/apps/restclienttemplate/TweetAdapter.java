@@ -34,7 +34,7 @@ public class TweetAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private final int TWEET_NO_IMAGE = 0;
     private final int TWEET_IMAGE = 1;
 
-    public static final int REQUEST_CODE =1111;
+    public static final int NEW_TWEET_CODE =1111;
     TwitterClient client;
 
     public TweetAdapter(Activity context, List<Tweet> tweets) {
@@ -105,6 +105,7 @@ public class TweetAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private void bindViewWithImage(TweetImageViewHolder viewHolder, int position) {
 
         Tweet tweet = tweetList.get(position);
+        viewHolder.position = position;
         viewHolder.setTweet(tweet);
         viewHolder.tvTweet.setText(tweet.getText());
         viewHolder.twName.setText(tweet.getUser().getUserName());
@@ -140,6 +141,7 @@ public class TweetAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private void bindViewTextOnly(TweetNoImageViewHolder viewHolder, int position) {
         Tweet tweet = tweetList.get(position);
+        viewHolder.position = position;
         viewHolder.setTweet(tweet);
         if (!TextUtils.isEmpty(tweet.getUser().getProfileImageUrl())) {
             Glide.with(context).load(tweet.getUser().getProfileImageUrl())
@@ -185,6 +187,7 @@ public class TweetAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         TextView countLike;
         TextView timeStamp;
         Tweet tweet;
+        int position;
 
         public Tweet getTweet() {
             return tweet;
@@ -197,6 +200,7 @@ public class TweetAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         public TweetImageViewHolder(View view) {
             super(view);
+            view.setOnClickListener(this);
             ivProfileImage = (ImageView) view.findViewById(R.id.imgProfile);
             twName = (TextView)view.findViewById(R.id.tvName);
             twScreenName = (TextView)view.findViewById(R.id.tvScreenName);
@@ -219,9 +223,9 @@ public class TweetAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             client = Application.getRestClient();
             switch (v.getId()){
                 case R.id.btnReply:
-                    Intent intent = new Intent(context, NewTweet.class);
+                    Intent intent = new Intent(context, NewTweetActivity.class);
                     intent.putExtra(Utils.TWEET, tweet);
-                    context.startActivityForResult(intent, REQUEST_CODE);
+                    context.startActivityForResult(intent, NEW_TWEET_CODE);
                     break;
                 case R.id.btnRetweet:
                     final Boolean isRetweet = tweet.isRetweeted()? false: true;
@@ -239,8 +243,14 @@ public class TweetAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     });
 
                     break;
+                case R.id.tweet_item:
+                    intent = new Intent(context, ViewTweetActivity.class);
+                    intent.putExtra(Utils.TWEET, tweet);
+                    intent.putExtra(Utils.POSITION, position);
+                    context.startActivityForResult(intent, Utils.VIEW_TWEET_REQUEST);
+                    break;
                 case R.id.btnLike:
-                   final boolean isLiked = tweet.isFavorited()?false:true;
+                   final boolean isLiked = !tweet.isFavorited();
                     tweet.setFavorited(isLiked);
                     client.isLike(tweet.getIdStr(), isLiked, new JsonHttpResponseHandler(){
                         @Override
@@ -276,6 +286,7 @@ public class TweetAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         TextView countLike;
         TextView timeStamp;
         Tweet tweet;
+        int position;
 
         public Tweet getTweet() {
             return tweet;
@@ -288,6 +299,7 @@ public class TweetAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         public TweetNoImageViewHolder(View view) {
             super(view);
+            view.setOnClickListener(this);
             ivProfileImage = (ImageView) view.findViewById(R.id.imgProfile);
             twName = (TextView) view.findViewById(R.id.tvName);
             twScreenName = (TextView) view.findViewById(R.id.tvScreenName);
@@ -311,12 +323,12 @@ public class TweetAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             client = Application.getRestClient();
             switch (v.getId()){
                 case R.id.btnReply:
-                    Intent intent = new Intent(context, NewTweet.class);
+                    Intent intent = new Intent(context, NewTweetActivity.class);
                     intent.putExtra(Utils.TWEET, tweet);
-                    context.startActivityForResult(intent, REQUEST_CODE);
+                    context.startActivityForResult(intent, NEW_TWEET_CODE);
                     break;
                 case R.id.btnRetweet:
-                    final Boolean isRetweet = tweet.isRetweeted()? false: true;
+                    final Boolean isRetweet = !tweet.isRetweeted();
                     tweet.setRetweeted(isRetweet);
                     client.retweet(tweet.getIdStr(), isRetweet, new JsonHttpResponseHandler(){
                         @Override
@@ -331,8 +343,14 @@ public class TweetAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     });
 
                     break;
+                case R.id.tweet_item:
+                    Intent inten = new Intent(context, ViewTweetActivity.class);
+                    inten.putExtra(Utils.TWEET, tweet);
+                    inten.putExtra(Utils.POSITION, position);
+                    context.startActivityForResult(inten, Utils.VIEW_TWEET_REQUEST);
+                    break;
                 case R.id.btnLike:
-                    final boolean isLiked = tweet.isFavorited()?false:true;
+                    final boolean isLiked = !tweet.isFavorited();
                     tweet.setFavorited(isLiked);
                     client.isLike(tweet.getIdStr(), isLiked, new JsonHttpResponseHandler(){
                         @Override

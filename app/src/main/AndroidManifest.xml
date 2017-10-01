@@ -36,8 +36,8 @@
             android:name=".TweetsListActivity"
             android:label="@string/title_activity_tweets_list"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".NewTweet" />
-        <activity android:name=".ViewTweet"></activity>
+        <activity android:name=".NewTweetActivity" />
+        <activity android:name=".ViewTweetActivity"></activity>
     </application>
 
 </manifest>

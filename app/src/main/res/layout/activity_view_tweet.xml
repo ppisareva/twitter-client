@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -30,6 +31,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
+                android:textColor="@color/tw__composer_black"
                 android:layout_toRightOf="@id/ivProfile"/>
 
             <TextView
@@ -38,6 +40,7 @@
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/ivProfile"
                 android:layout_below="@id/tvName"
+                android:textColor="@color/tw__composer_deep_gray"
                 android:layout_alignLeft="@id/tvName"
                 android:layout_alignRight="@id/tvName"/>
 
@@ -46,42 +49,48 @@
                 android:layout_height="match_parent"
                 android:layout_below="@id/ivProfile"
                 android:id="@+id/tvText"
+                android:textColor="@color/tw__composer_black"
+                android:textSize="@dimen/text_tweet_det"
                 android:autoLink="all"
+                android:layout_marginBottom="@dimen/margin"
                 android:linksClickable="true"
                 />
             <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/tweet_image_details"
                 android:id="@+id/ivImage"
                 android:visibility="gone"
                 android:layout_below="@id/tvText"
                 android:scaleType="fitXY"
                 android:adjustViewBounds="true"/>
 
-            <TextViewView
+            <View
                 android:id="@+id/line_separator1"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="0.2dp"
                 android:background="@android:color/darker_gray"
                 android:layout_below="@id/ivImage"/>
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/height_count"
+                android:gravity="center_vertical"
                 android:id="@+id/tvTime"
+                android:textSize="@dimen/timestamp_tweet"
                 android:layout_below="@id/line_separator1"/>
 
             <TextView
                 android:id="@+id/line_separator2"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="0.2dp"
                 android:background="@android:color/darker_gray"
                 android:layout_below="@+id/tvTime"/>
 
             <LinearLayout
                 android:id="@+id/ll_counts"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/height_count"
+                android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:layout_below="@id/line_separator2">
 
@@ -89,10 +98,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/tvReplyCount"
+                    android:textSize="@dimen/timestamp_tweet"
                     android:paddingRight="5dp"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textSize="@dimen/timestamp_tweet"
                     android:id="@+id/tvLikeCount"/>
             </LinearLayout>
             <TextView
@@ -120,7 +131,7 @@
                     app:srcCompat="@drawable/ic_reply" />
 
                 <ImageButton
-                    android:id="@+id/btnReply"
+                    android:id="@+id/btnRetweet"
                     android:layout_width="@dimen/image_button"
                     android:layout_height="@dimen/image_button"
                     android:layout_margin="@dimen/margin"
@@ -136,14 +147,6 @@
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     app:srcCompat="@drawable/ic_like" />
-                <ImageButton
-                    android:id="@+id/btnRetweet"
-                    android:layout_width="@dimen/image_button"
-                    android:layout_height="@dimen/image_button"
-                    android:layout_margin="@dimen/margin"
-                    android:layout_weight="1"
-                    android:background="@android:color/transparent"
-                    app:srcCompat="@drawable/ic_share_tweet" />
             </LinearLayout>
         </RelativeLayout>
     </ScrollView>
@@ -154,42 +157,31 @@
         android:orientation="vertical"
         android:layout_gravity="bottom">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="@android:color/darker_gray"/>
-
         <EditText
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="3"
+            android:textSize="@dimen/tweet_retly"
             android:id="@+id/etDetails_ReplyToText"/>
 
-        <RelativeLayout
-            android:id="@+id/rlSendAction"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:orientation="horizontal"
-            android:layout_marginLeft="200dp"
-            >
 
-            <Button
-                android:layout_width="wrap_content"
+            <LinearLayout
                 android:layout_height="wrap_content"
-                android:id="@+id/btnSendTweet"
-                android:background="@color/tw__blue_default"
-                android:text="@string/send"
-                />
+                android:id="@+id/llComposer"
+                style="@style/tw__ComposerToolbar">
 
-            <TextView
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/tvDetails_Character_Count"
-                android:layout_toLeftOf="@id/btnSendTweet"
-                android:layout_alignTop="@id/btnSendTweet"
-                android:layout_alignBottom="@id/btnSendTweet"
-                android:layout_marginRight="20dp"/>
+                <TextView
+                    android:id="@+id/tvCount"
+                    style="@style/tw__ComposerCharCount"/>
 
-        </RelativeLayout>
+                <Button
+                    android:id="@+id/btnPostTweet"
+                    android:onClick="onTweetSend"
+                    style="@style/tw__ComposerTweetButton"/>
+
+            </LinearLayout>
+
+
     </LinearLayout>
 </FrameLayout>
+</layout>

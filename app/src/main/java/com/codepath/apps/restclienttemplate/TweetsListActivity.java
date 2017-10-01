@@ -71,7 +71,7 @@ public class TweetsListActivity extends AppCompatActivity  {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(TweetsListActivity.this, NewTweet.class);
+                Intent intent = new Intent(TweetsListActivity.this, NewTweetActivity.class);
                 startActivityForResult(intent,REQUEST_CODE);
 
 
@@ -89,6 +89,23 @@ public class TweetsListActivity extends AppCompatActivity  {
             adapter.notifyItemRangeInserted(0,1);
             linearLayoutManager.scrollToPosition(0);
         }
+
+        if (resultCode == RESULT_OK && requestCode == Utils.VIEW_TWEET_REQUEST) {
+            int position = data.getIntExtra(Utils.POSITION, -1);
+            if (data.hasExtra(Utils.FAVORITE)) {
+                tweets.get(position).setFavorited(data.getBooleanExtra(Utils.FAVORITE, false));
+            }
+            if (data.hasExtra(Utils.RETWEET)) {
+                tweets.get(position).setRetweeted(data.getBooleanExtra(Utils.RETWEET, false));
+            }
+            if (data.hasExtra(Utils.REPLY)) {
+                adapter.notifyItemChanged(position);
+                tweets.add(0, (Tweet) data.getParcelableExtra(Utils.REPLY));
+                adapter.notifyItemInserted(0);
+            }
+            adapter.notifyItemChanged(position);
+        }
+
     }
 
     private void loadHomeTimeline(final Boolean isScrolled, final Boolean isRefreshed) {

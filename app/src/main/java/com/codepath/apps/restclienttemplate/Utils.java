@@ -4,8 +4,10 @@ import android.text.format.DateUtils;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 /**
@@ -17,6 +19,11 @@ public class Utils {
     public static final String TOCKEN = "TOKEN";
     public static final String USER = "user";
     public static final String TWEET = "tweet";
+    public static final int VIEW_TWEET_REQUEST = 1234;
+    public static final String POSITION = "pos";
+    public static final String RETWEET = "retweet";
+    public static final String FAVORITE = "fav";
+    public static final String REPLY = "reply";
 
     public static String getRelativeTimeAgo(String rawJsonDate) {
         String twitterFormat = "EEE MMM dd HH:mm:ss ZZZZZ yyyy";
@@ -73,4 +80,16 @@ public class Utils {
         return input;
     }
 
+    public static String longFormat(String created_at) {
+        try {
+        String twitterFormat = "EEE MMM dd HH:mm:ss ZZZZZ yyyy";
+        DateFormat df = new SimpleDateFormat(twitterFormat);
+            Date date = df.parse(created_at);
+            df = new SimpleDateFormat("HH:mm - dd MMM EEE");
+            return df.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return created_at;
+        }
+    }
 }

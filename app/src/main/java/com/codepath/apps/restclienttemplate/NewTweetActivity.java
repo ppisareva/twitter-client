@@ -23,7 +23,7 @@ import com.loopj.android.http.TextHttpResponseHandler;
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.util.TextUtils;
 
-public class NewTweet extends AppCompatActivity {
+public class NewTweetActivity extends AppCompatActivity {
     ActivityNewTweetBinding binding;
     TwitterClient client;
     User user = new User();
