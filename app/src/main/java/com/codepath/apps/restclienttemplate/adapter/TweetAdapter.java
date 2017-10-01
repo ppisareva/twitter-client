@@ -1,4 +1,4 @@
-package com.codepath.apps.restclienttemplate;
+package com.codepath.apps.restclienttemplate.adapter;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -12,6 +12,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.codepath.apps.restclienttemplate.activities.NewTweetActivity;
+import com.codepath.apps.restclienttemplate.R;
+import com.codepath.apps.restclienttemplate.data.TwitterClient;
+import com.codepath.apps.restclienttemplate.Utils;
+import com.codepath.apps.restclienttemplate.activities.ViewTweetActivity;
+import com.codepath.apps.restclienttemplate.application.Application;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -52,7 +58,7 @@ public class TweetAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public int getItemViewType(int position) {
         Tweet tweet = tweetList.get(position);
 
-        if (tweet.getMedia_type().equals("photo")) {
+        if (tweet.getMedia_type().equals(Utils.PHOTO)) {
             return TWEET_IMAGE;
         }
 
@@ -123,18 +129,14 @@ public class TweetAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
         if (!TextUtils.isEmpty(tweet.getUser().getProfileImageUrl())) {
             Glide.with(context).load(tweet.getUser().getProfileImageUrl())
-//                    .placeholder(R.mipmap.ic_wifi)
                     .fitCenter()
                     .into(viewHolder.ivProfileImage);
         }
 
         viewHolder.timeStamp.setText(Utils.getRelativeTimeAgo(tweet.getCreated_at()));
         Glide.with(context).load(tweet.getMedia_url())
-//                    .placeholder(R.mipmap.ic_wifi)
                 .centerCrop()
                 .into(viewHolder.ivImage);
-//        viewHolder.countLike.setText(tweet.getFavourite_count()==null ? "0" : tweet.getFavourite_count());
-//        viewHolder.countRetweet.setText(tweet.getRetweet_count());
 
     }
 
@@ -145,7 +147,6 @@ public class TweetAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         viewHolder.setTweet(tweet);
         if (!TextUtils.isEmpty(tweet.getUser().getProfileImageUrl())) {
             Glide.with(context).load(tweet.getUser().getProfileImageUrl())
-//                    .placeholder(R.mipmap.ic_wifi)
                     .fitCenter()
                     .into(viewHolder.ivProfileImage);
         }
@@ -165,112 +166,21 @@ public class TweetAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         } else {
             viewHolder.ibRetweet.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_retweet_vector));
         }
-
-//        viewHolder.countLike.setText(tweet.getFavourite_count());
-//        viewHolder.countRetweet.setText(tweet.getRetweet_count());
     }
 
 
 
-    private class TweetImageViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    private class TweetImageViewHolder extends TweetNoImageViewHolder{
 
-        ImageView ivProfileImage;
-        TextView twName;
-        TextView twScreenName;
-        TextView tvTweet;
+
         ImageView ivImage;
-        ImageButton ibReply;
-        ImageButton ibRetweet;
-        ImageButton ibLike;
-        TextView countRetweet;
-        TextView countShare;
-        TextView countLike;
-        TextView timeStamp;
-        Tweet tweet;
-        int position;
 
-        public Tweet getTweet() {
-            return tweet;
-        }
-
-        public void setTweet(Tweet tweet) {
-            this.tweet = tweet;
-        }
 
 
         public TweetImageViewHolder(View view) {
             super(view);
-            view.setOnClickListener(this);
-            ivProfileImage = (ImageView) view.findViewById(R.id.imgProfile);
-            twName = (TextView)view.findViewById(R.id.tvName);
-            twScreenName = (TextView)view.findViewById(R.id.tvScreenName);
-            tvTweet = (TextView) view.findViewById(R.id.tvTweet);
             ivImage =(ImageView) view.findViewById(R.id.imgTweet);
-            ibReply = (ImageButton) view.findViewById(R.id.btnReply);
-            ibReply.setOnClickListener(this);
-            ibRetweet = (ImageButton) view.findViewById(R.id.btnRetweet);
-            ibRetweet.setOnClickListener(this);
-            ibLike =(ImageButton) view.findViewById(R.id.btnLike);
-            ibLike.setOnClickListener(this);
-            countRetweet = (TextView) view.findViewById(R.id.tvReplyCount);
-            countShare = (TextView) view.findViewById(R.id.tvRetweetCount);
-            countLike = (TextView) view.findViewById(R.id.tvLikeCount);
-            timeStamp = (TextView) view.findViewById(R.id.tvTimeStamp);
         }
-
-        @Override
-        public void onClick(View v) {
-            client = Application.getRestClient();
-            switch (v.getId()){
-                case R.id.btnReply:
-                    Intent intent = new Intent(context, NewTweetActivity.class);
-                    intent.putExtra(Utils.TWEET, tweet);
-                    context.startActivityForResult(intent, NEW_TWEET_CODE);
-                    break;
-                case R.id.btnRetweet:
-                    final Boolean isRetweet = tweet.isRetweeted()? false: true;
-                    tweet.setRetweeted(isRetweet);
-                    client.retweet(tweet.getIdStr(), isRetweet, new JsonHttpResponseHandler(){
-                        @Override
-                        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                            System.err.println( " tweet was retweeted");
-                            if(isRetweet) {
-                                ibRetweet.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_retweet_vector_true));
-                            } else {
-                                ibRetweet.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_retweet_vector));
-                            }
-                        }
-                    });
-
-                    break;
-                case R.id.tweet_item:
-                    intent = new Intent(context, ViewTweetActivity.class);
-                    intent.putExtra(Utils.TWEET, tweet);
-                    intent.putExtra(Utils.POSITION, position);
-                    context.startActivityForResult(intent, Utils.VIEW_TWEET_REQUEST);
-                    break;
-                case R.id.btnLike:
-                   final boolean isLiked = !tweet.isFavorited();
-                    tweet.setFavorited(isLiked);
-                    client.isLike(tweet.getIdStr(), isLiked, new JsonHttpResponseHandler(){
-                        @Override
-                        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-
-                            System.err.println( " tweet was liked");
-                            if(isLiked) {
-                                ibLike.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_like_vector_true));
-                            } else {
-                                ibLike.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_like_vector));
-                            }
-                        }
-                    });
-                    break;
-                default:
-            }
-        }
-
-
-
 }
 
     private class TweetNoImageViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -314,8 +224,6 @@ public class TweetAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             countShare = (TextView) view.findViewById(R.id.tvRetweetCount);
             countLike = (TextView) view.findViewById(R.id.tvLikeCount);
             timeStamp = (TextView) view.findViewById(R.id.tvTimeStamp);
-
-
         }
 
         @Override
@@ -341,7 +249,6 @@ public class TweetAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                             }
                         }
                     });
-
                     break;
                 case R.id.tweet_item:
                     Intent inten = new Intent(context, ViewTweetActivity.class);
@@ -355,7 +262,6 @@ public class TweetAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     client.isLike(tweet.getIdStr(), isLiked, new JsonHttpResponseHandler(){
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-
                             System.err.println( " tweet was liked");
                             if(isLiked) {
                                 ibLike.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_like_vector_true));

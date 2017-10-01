@@ -3,8 +3,11 @@ package com.codepath.apps.restclienttemplate.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.codepath.apps.restclienttemplate.data.TweetDatabase;
 import com.google.gson.JsonObject;
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.PrimaryKey;
+import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 /**
@@ -13,13 +16,15 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 
 
 
+@Table(database = TweetDatabase.class)
 public class User extends BaseModel implements Parcelable  {
     public static final String ID_STR = "id_str";
     public static final String NAME = "name";
     public static final String SCREEN_NAME = "screen_name";
     public static final String PROFILE_IMAGE_URL = "profile_image_url";
 
-    @Column(name = "UserId" )
+    @Column(name = "UserId")
+    @PrimaryKey
     long user_id;
 
     @Column(name = "IdStr")

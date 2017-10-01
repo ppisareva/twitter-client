@@ -1,4 +1,4 @@
-package com.codepath.apps.restclienttemplate;
+package com.codepath.apps.restclienttemplate.activities;
 
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -9,9 +9,12 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 
 import com.bumptech.glide.Glide;
+import com.codepath.apps.restclienttemplate.R;
+import com.codepath.apps.restclienttemplate.Utils;
+import com.codepath.apps.restclienttemplate.application.Application;
+import com.codepath.apps.restclienttemplate.data.TwitterClient;
 import com.codepath.apps.restclienttemplate.databinding.ActivityViewTweetBinding;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 import com.google.gson.Gson;
@@ -39,6 +42,7 @@ public class ViewTweetActivity extends AppCompatActivity {
         twitterClient = Application.getRestClient();
         tweet = getIntent().getParcelableExtra(Utils.TWEET);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_view_tweet);
+        binding.etDetailsReplyToText.setEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if (tweet.getUser() != null && !TextUtils.isEmpty(tweet.getUser().getProfileImageUrl())) {
             Glide.with(this).load(tweet.getUser().getProfileImageUrl())
@@ -47,26 +51,28 @@ public class ViewTweetActivity extends AppCompatActivity {
                     .into(binding.ivProfile);
         }
         binding.tvName.setText(tweet.getUser().getUserName());
-        binding.tvScreenName.setText("@"+tweet.getUser().getScreenName());
+        binding.tvScreenName.setText("@" + tweet.getUser().getScreenName());
         binding.tvText.setText(tweet.getText().toString());
-        if(tweet.getMedia_type().equals("photo")){
+        if (tweet.getMedia_type().equals(Utils.PHOTO)) {
             binding.ivImage.setVisibility(View.VISIBLE);
             Glide.with(this).load(tweet.getMedia_url())
-//                    .placeholder(R.mipmap.ic_wifi)
                     .centerCrop()
                     .into(binding.ivImage);
-        }
-        else {
+        } else {
             binding.ivImage.setVisibility(View.GONE);
         }
-
         binding.tvTime.setText(Utils.longFormat(tweet.getCreated_at()));
-        binding.tvReplyCount.setText(tweet.getRetweet_count() + " " +  getString(R.string.retweet));
-        binding.tvLikeCount.setText(tweet.getFavourite_count()+ " " + getString(R.string.liked));
-        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        binding.etDetailsReplyToText.setText("@"+tweet.getUser().getScreenName());
-        binding.etDetailsReplyToText.setSelection(binding.etDetailsReplyToText.length());
-        binding.tvCount.setText(140-binding.etDetailsReplyToText.length()+"");
+        binding.tvReplyCount.setText(tweet.getRetweet_count() + " " + getString(R.string.retweet));
+        binding.tvLikeCount.setText(tweet.getFavourite_count() + " " + getString(R.string.liked));
+
+
+        binding.btnReply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startNewRetweet();
+            }
+        });
+
 
         binding.etDetailsReplyToText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -85,7 +91,7 @@ public class ViewTweetActivity extends AppCompatActivity {
                     binding.btnPostTweet.setEnabled(true);
                 }
                 length = 140 - s.length();
-                binding.tvCount.setText(length+"");
+                binding.tvCount.setText(length + "");
 
             }
 
@@ -94,44 +100,43 @@ public class ViewTweetActivity extends AppCompatActivity {
 
             }
         });
-        binding.btnRetweet.setImageDrawable(tweet.isRetweeted()?getResources().
-                getDrawable(R.drawable.ic_retweet_vector_true):
-        getResources().getDrawable(R.drawable.ic_retweet_vector));
+        binding.btnRetweet.setImageDrawable(tweet.isRetweeted() ? getResources().
+                getDrawable(R.drawable.ic_retweet_vector_true) :
+                getResources().getDrawable(R.drawable.ic_retweet_vector));
         binding.btnRetweet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Boolean isRetweet = tweet.isRetweeted()? false: true;
+                final Boolean isRetweet = !tweet.isRetweeted();
                 tweet.setRetweeted(isRetweet);
-                twitterClient.retweet(tweet.getIdStr(), isRetweet, new JsonHttpResponseHandler(){
+                twitterClient.retweet(tweet.getIdStr(), isRetweet, new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                        System.err.println( " tweet was retweeted");
+                        System.err.println(" tweet was retweeted" + isRetweet);
                         data.putExtra(Utils.RETWEET, isRetweet);
-                        if(isRetweet) {
+                        if (isRetweet) {
                             binding.btnRetweet.setImageDrawable(getResources().getDrawable(R.drawable.ic_retweet_vector_true));
                         } else {
                             binding.btnRetweet.setImageDrawable(getResources().getDrawable(R.drawable.ic_retweet_vector));
                         }
                     }
                 });
-
             }
         });
 
-        binding.btnLike.setImageDrawable(tweet.isFavorited()?
-                getResources().getDrawable(R.drawable.ic_like_vector_true):
+        binding.btnLike.setImageDrawable(tweet.isFavorited() ?
+                getResources().getDrawable(R.drawable.ic_like_vector_true) :
                 getResources().getDrawable(R.drawable.ic_like_vector));
         binding.btnLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final boolean isLiked = tweet.isFavorited()?false:true;
+                final boolean isLiked = !tweet.isFavorited();
                 tweet.setFavorited(isLiked);
-                twitterClient.isLike(tweet.getIdStr(), isLiked, new JsonHttpResponseHandler(){
+                twitterClient.isLike(tweet.getIdStr(), isLiked, new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                         data.putExtra(Utils.FAVORITE, isLiked);
-                        System.err.println( " tweet was liked");
-                        if(isLiked) {
+                        System.err.println(" tweet was liked" + isLiked);
+                        if (isLiked) {
                             binding.btnLike.setImageDrawable(getResources().getDrawable(R.drawable.ic_like_vector_true));
                         } else {
                             binding.btnLike.setImageDrawable(getResources().getDrawable(R.drawable.ic_like_vector));
@@ -142,10 +147,16 @@ public class ViewTweetActivity extends AppCompatActivity {
         });
     }
 
+    void startNewRetweet(){
+        binding.etDetailsReplyToText.setEnabled(true);
+        binding.etDetailsReplyToText.setText("@" + tweet.getUser().getScreenName());
+        binding.etDetailsReplyToText.setSelection(binding.etDetailsReplyToText.length());
+        binding.tvCount.setText(140 - binding.etDetailsReplyToText.length() + "");
+        binding.llComposer.setVisibility(View.VISIBLE);
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-
             case android.R.id.home:
                 finish();
                 return true;
@@ -170,7 +181,7 @@ public class ViewTweetActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString) {
-                Tweet newTweet = new Tweet();
+                Tweet newTweet;
                 if (responseString != null) {
                     try {
                         Gson gson = new GsonBuilder().create();

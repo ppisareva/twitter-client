@@ -10,7 +10,9 @@
 
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
-        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+        <item name="colorPrimary">@color/tw__blue_default</item>
+        <item name="colorPrimaryDark">@color/tw__blue_pressed</item>
+        <item name="colorAccent">@color/tw__blue_pressed</item>
     </style>
 
     <style name="AppTheme.NoActionBar">

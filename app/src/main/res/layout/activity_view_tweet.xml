@@ -160,7 +160,7 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLines="3"
+            android:maxLines="2"
             android:textSize="@dimen/tweet_retly"
             android:id="@+id/etDetails_ReplyToText"/>
 
@@ -168,6 +168,7 @@
             <LinearLayout
                 android:layout_height="wrap_content"
                 android:id="@+id/llComposer"
+                android:visibility="gone"
                 style="@style/tw__ComposerToolbar">
 
                 <TextView

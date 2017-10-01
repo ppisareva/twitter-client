@@ -3,14 +3,18 @@ package com.codepath.apps.restclienttemplate.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.codepath.apps.restclienttemplate.data.TweetDatabase;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.PrimaryKey;
+import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 /**
  * Created by polina on 9/28/17.
  */
+@Table(database = TweetDatabase.class)
 public class Tweet  extends BaseModel implements Parcelable {
     public static final String CREATED_AT = "created_at";
     public static final String ID_STR = "id_str";
@@ -34,6 +38,7 @@ public class Tweet  extends BaseModel implements Parcelable {
 
 
     @Column(name = "IdStr")
+    @PrimaryKey
     private String idStr = "";
 
     @Column(name = "Created_At")
@@ -65,6 +70,8 @@ public class Tweet  extends BaseModel implements Parcelable {
 
     @Column(name = "Media_Content_Type")
     private String media_content_type = "";
+
+
     private User user;
 
     @Column(name = "UserId")
