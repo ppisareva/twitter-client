@@ -19,6 +19,7 @@ public class LoginActivity extends OAuthLoginActionBarActivity<TwitterClient> {
 	public void onLoginSuccess() {
 		Intent i = new Intent(this, TweetsListActivity.class);
 		startActivity(i);
+		Application.initUser();
 	}
 
 

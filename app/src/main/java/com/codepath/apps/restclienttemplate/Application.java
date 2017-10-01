@@ -1,15 +1,19 @@
 package com.codepath.apps.restclienttemplate;
 
 import android.content.Context;
-import android.util.Log;
 
+import com.codepath.apps.restclienttemplate.models.User;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowLog;
 import com.raizlabs.android.dbflow.config.FlowManager;
-import com.twitter.sdk.android.core.DefaultLogger;
-import com.twitter.sdk.android.core.Twitter;
-import com.twitter.sdk.android.core.TwitterAuthConfig;
-import com.twitter.sdk.android.core.TwitterConfig;
+
+import org.json.JSONObject;
+
+import cz.msebera.android.httpclient.Header;
 
 /*
  * This is the Android application itself and is used to configure various settings
@@ -23,6 +27,7 @@ import com.twitter.sdk.android.core.TwitterConfig;
  */
 public class Application extends android.app.Application {
 	private static Context context;
+	static User user;
 
 	@Override
 	public void onCreate() {
@@ -30,19 +35,33 @@ public class Application extends android.app.Application {
 
 		FlowManager.init(new FlowConfig.Builder(this).build());
 		FlowLog.setMinimumLoggingLevel(FlowLog.Level.V);
-
 		Application.context = this;
 
-		TwitterConfig config = new TwitterConfig.Builder(this)
-				.logger(new DefaultLogger(Log.DEBUG))
-				.twitterAuthConfig(new TwitterAuthConfig(BuildConfig.CONSUMER_KEY, BuildConfig.CONSUMER_SECRET))
-				.debug(true)
-				.build();
-		Twitter.initialize(config);
 
+	}
+
+	public static User getUser() {
+		return user;
 	}
 
 	public static TwitterClient getRestClient() {
 		return (TwitterClient) TwitterClient.getInstance(TwitterClient.class, Application.context);
+	}
+
+	public static void initUser() {
+				getRestClient().verifyCredentials(new JsonHttpResponseHandler(){
+					@Override
+					public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+						if(response!=null){
+							Gson gson = new GsonBuilder().create();
+							JsonObject jsonObject = gson.fromJson(response.toString(), JsonObject.class);
+							if (jsonObject != null) {
+								user = User.fromJsonObjectToUser(jsonObject);
+							}
+						}
+					}
+
+
+		});
 	}
 }

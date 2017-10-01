@@ -27,7 +27,11 @@ public class Tweet  extends BaseModel implements Parcelable {
     public static final String URL = "url";
     public static final String USER = "user";
     public static final String ENTITIES = "entities";
+    public static final String RETWEETER = "retweeted";
+    public static final String FAVORITED = "favorited";
     public static final String VIDEO_MP4 = "video/mp4";
+
+
 
     @Column(name = "IdStr")
     private String idStr = "";
@@ -41,8 +45,14 @@ public class Tweet  extends BaseModel implements Parcelable {
     @Column(name = "Retweet_Count")
     private String retweet_count = "";
 
+    @Column(name = "Retweeted")
+    public  boolean retweeted =false;
+
     @Column(name = "Favourite_Count")
     private String favourite_count = "";
+
+    @Column(name = "Favorited")
+    public  boolean favorited =false;
 
     @Column(name = "Media_Type")
     private String media_type = "";
@@ -62,6 +72,22 @@ public class Tweet  extends BaseModel implements Parcelable {
 
     public Tweet() {
         super();
+    }
+
+    public boolean isRetweeted() {
+        return retweeted;
+    }
+
+    public boolean isFavorited() {
+        return favorited;
+    }
+
+    public void setRetweeted(boolean retweeted) {
+        this.retweeted = retweeted;
+    }
+
+    public void setFavorited(boolean favorited) {
+        this.favorited = favorited;
     }
 
     public String getText() {
@@ -170,6 +196,13 @@ public class Tweet  extends BaseModel implements Parcelable {
         if (jsonTweetObject.has(RETWEET_COUNT)) {
             tweet.setRetweet_count(jsonTweetObject.get(RETWEET_COUNT).getAsString());
         }
+        if(jsonTweetObject.has(FAVORITED)){
+            tweet.setFavorited(jsonTweetObject.get(FAVORITED).getAsBoolean());
+        }
+
+        if (jsonTweetObject.has(RETWEETER)){
+            tweet.setRetweeted(jsonTweetObject.get(RETWEETER).getAsBoolean());
+        }
 
         if (jsonTweetObject.has(USER)) {
             User newUser = User.fromJsonObjectToUser(jsonTweetObject.get(USER).getAsJsonObject());
@@ -247,6 +280,7 @@ public class Tweet  extends BaseModel implements Parcelable {
         return tweet;
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -258,12 +292,15 @@ public class Tweet  extends BaseModel implements Parcelable {
         dest.writeString(this.created_at);
         dest.writeString(this.text);
         dest.writeString(this.retweet_count);
+        dest.writeByte(this.retweeted ? (byte) 1 : (byte) 0);
         dest.writeString(this.favourite_count);
+        dest.writeByte(this.favorited ? (byte) 1 : (byte) 0);
         dest.writeString(this.media_type);
         dest.writeString(this.media_url);
         dest.writeString(this.video_url);
         dest.writeString(this.media_content_type);
         dest.writeParcelable(this.user, flags);
+        dest.writeLong(this.user_id);
     }
 
     protected Tweet(Parcel in) {
@@ -271,22 +308,26 @@ public class Tweet  extends BaseModel implements Parcelable {
         this.created_at = in.readString();
         this.text = in.readString();
         this.retweet_count = in.readString();
+        this.retweeted = in.readByte() != 0;
         this.favourite_count = in.readString();
+        this.favorited = in.readByte() != 0;
         this.media_type = in.readString();
         this.media_url = in.readString();
         this.video_url = in.readString();
         this.media_content_type = in.readString();
         this.user = in.readParcelable(User.class.getClassLoader());
+        this.user_id = in.readLong();
     }
 
-    public static final Parcelable.Creator<Tweet> CREATOR = new Parcelable.Creator<Tweet>() {
+    public static final Creator<Tweet> CREATOR = new Creator<Tweet>() {
+        @Override
         public Tweet createFromParcel(Parcel source) {
             return new Tweet(source);
         }
 
+        @Override
         public Tweet[] newArray(int size) {
             return new Tweet[size];
         }
     };
-
 }

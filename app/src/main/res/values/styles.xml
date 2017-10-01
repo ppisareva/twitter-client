@@ -22,4 +22,13 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="tw_name_text" parent="@android:style/Theme.Light">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/tw__composer_black</item>
+        <item name="android:padding">@dimen/tw__composer_spacing_large</item>
+        <item name="android:src">@drawable/tw__composer_close</item>
+        <item name="android:background">@null</item>
+        <item name="android:scaleType">fitCenter</item>
+    </style>
+
 </resources>

@@ -31,9 +31,10 @@ public class Utils {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
+        System.err.println("Time " + relativeDate);
         return shortFormat(relativeDate);
     }
+
 
     public static String shortFormat(String input) {
         String[] parts = input.split(" ");

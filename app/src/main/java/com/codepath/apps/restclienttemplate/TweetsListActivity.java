@@ -36,6 +36,7 @@ public class TweetsListActivity extends AppCompatActivity  {
     TweetAdapter adapter;
     LinearLayoutManager linearLayoutManager;
     SwipeRefreshLayout swipeRefreshLayout;
+    public static final int REQUEST_CODE =1111;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,10 +71,24 @@ public class TweetsListActivity extends AppCompatActivity  {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               startActivity(new Intent(TweetsListActivity.this, NewTweet.class));
+                Intent intent = new Intent(TweetsListActivity.this, NewTweet.class);
+                startActivityForResult(intent,REQUEST_CODE);
+
 
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
+            Tweet tweet = (Tweet) data.getExtras().get(Utils.TWEET);
+            tweets.add(0, tweet);
+            adapter.notifyItemRangeInserted(0,1);
+            linearLayoutManager.scrollToPosition(0);
+        }
     }
 
     private void loadHomeTimeline(final Boolean isScrolled, final Boolean isRefreshed) {
@@ -152,6 +167,5 @@ public class TweetsListActivity extends AppCompatActivity  {
 
         });
     }
-
 
 }

@@ -1,9 +1,195 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.codepath.apps.restclienttemplate.ViewTweet">
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    android:background="@android:color/white"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin">
 
-</android.support.constraint.ConstraintLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/ivProfile"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginRight="20dp"
+                />
+
+            <TextView
+                android:id="@+id/tvName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:layout_toRightOf="@id/ivProfile"/>
+
+            <TextView
+                android:id="@+id/tvScreenName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/ivProfile"
+                android:layout_below="@id/tvName"
+                android:layout_alignLeft="@id/tvName"
+                android:layout_alignRight="@id/tvName"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/ivProfile"
+                android:id="@+id/tvText"
+                android:autoLink="all"
+                android:linksClickable="true"
+                />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/ivImage"
+                android:visibility="gone"
+                android:layout_below="@id/tvText"
+                android:scaleType="fitXY"
+                android:adjustViewBounds="true"/>
+
+            <TextViewView
+                android:id="@+id/line_separator1"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"
+                android:layout_below="@id/ivImage"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvTime"
+                android:layout_below="@id/line_separator1"/>
+
+            <TextView
+                android:id="@+id/line_separator2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"
+                android:layout_below="@+id/tvTime"/>
+
+            <LinearLayout
+                android:id="@+id/ll_counts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_below="@id/line_separator2">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tvReplyCount"
+                    android:paddingRight="5dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tvLikeCount"/>
+            </LinearLayout>
+            <TextView
+                android:id="@+id/line_separator3"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"
+                android:layout_below="@id/ll_counts"/>
+
+            <LinearLayout
+                android:id="@+id/ll_tweet_actions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_below="@id/line_separator3">
+
+                <ImageButton
+                    android:id="@+id/btnReply"
+                    android:layout_width="@dimen/image_button"
+                    android:layout_height="@dimen/image_button"
+                    android:layout_marginRight="@dimen/margin"
+                    android:layout_weight="1"
+                    android:layout_margin="@dimen/margin"
+                    android:background="@android:color/transparent"
+                    app:srcCompat="@drawable/ic_reply" />
+
+                <ImageButton
+                    android:id="@+id/btnReply"
+                    android:layout_width="@dimen/image_button"
+                    android:layout_height="@dimen/image_button"
+                    android:layout_margin="@dimen/margin"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    app:srcCompat="@drawable/ic_share" />
+
+                <ImageButton
+                    android:id="@+id/btnLike"
+                    android:layout_width="@dimen/image_button"
+                    android:layout_height="@dimen/image_button"
+                    android:layout_margin="@dimen/margin"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    app:srcCompat="@drawable/ic_like" />
+                <ImageButton
+                    android:id="@+id/btnRetweet"
+                    android:layout_width="@dimen/image_button"
+                    android:layout_height="@dimen/image_button"
+                    android:layout_margin="@dimen/margin"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    app:srcCompat="@drawable/ic_share_tweet" />
+            </LinearLayout>
+        </RelativeLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="bottom">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@android:color/darker_gray"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/etDetails_ReplyToText"/>
+
+        <RelativeLayout
+            android:id="@+id/rlSendAction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:orientation="horizontal"
+            android:layout_marginLeft="200dp"
+            >
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btnSendTweet"
+                android:background="@color/tw__blue_default"
+                android:text="@string/send"
+                />
+
+            <TextView
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvDetails_Character_Count"
+                android:layout_toLeftOf="@id/btnSendTweet"
+                android:layout_alignTop="@id/btnSendTweet"
+                android:layout_alignBottom="@id/btnSendTweet"
+                android:layout_marginRight="20dp"/>
+
+        </RelativeLayout>
+    </LinearLayout>
+</FrameLayout>

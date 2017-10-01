@@ -42,38 +42,38 @@
         android:text="ttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt" />
 
     <ImageButton
-        android:id="@+id/btnRetweet"
+        android:id="@+id/btnReply"
         android:layout_width="@dimen/image_button"
         android:layout_height="@dimen/image_button"
         android:layout_alignStart="@+id/tvTweet"
-        android:layout_alignTop="@+id/btnShare"
+        android:layout_alignTop="@+id/btnRetweet"
         android:layout_marginRight="@dimen/margin"
         android:background="@android:color/transparent"
         app:srcCompat="@drawable/ic_reply" />
+
+    <TextView
+        android:id="@+id/tvReplyCount"
+        android:layout_width="@dimen/count_width"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/btnReply"
+        android:layout_toEndOf="@+id/btnReply" />
+
+    <ImageButton
+        android:id="@+id/btnRetweet"
+        android:layout_width="@dimen/image_button"
+        android:layout_height="@dimen/image_button"
+        android:layout_below="@+id/tvTweet"
+        android:layout_margin="@dimen/margin"
+        android:layout_toEndOf="@+id/tvReplyCount"
+        android:background="@android:color/transparent"
+        app:srcCompat="@drawable/ic_share" />
 
     <TextView
         android:id="@+id/tvRetweetCount"
         android:layout_width="@dimen/count_width"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/btnRetweet"
-        android:layout_toEndOf="@+id/btnRetweet" />
-
-    <ImageButton
-        android:id="@+id/btnShare"
-        android:layout_width="@dimen/image_button"
-        android:layout_height="@dimen/image_button"
-        android:layout_below="@+id/tvTweet"
-        android:layout_margin="@dimen/margin"
-        android:layout_toEndOf="@+id/tvRetweetCount"
-        android:background="@android:color/transparent"
-        app:srcCompat="@drawable/ic_share" />
-
-    <TextView
-        android:id="@+id/tvShareCount"
-        android:layout_width="@dimen/count_width"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/btnShare"
-        android:layout_toEndOf="@+id/btnShare"/>
+        android:layout_toEndOf="@+id/btnRetweet"/>
 
     <ImageButton
         android:id="@+id/btnLike"
@@ -82,7 +82,7 @@
         android:layout_below="@+id/tvTweet"
         android:layout_margin="@dimen/margin"
         android:background="@android:color/transparent"
-        android:layout_toEndOf="@+id/tvShareCount"
+        android:layout_toEndOf="@+id/tvRetweetCount"
         app:srcCompat="@drawable/ic_like" />
 
     <TextView
