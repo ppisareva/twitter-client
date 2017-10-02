@@ -48,11 +48,9 @@ The following **additional** features are implemented:
 * [x] List anything else that you can get done to improve the app functionality!
 
 ## Video Walkthrough
-
 Here's a walkthrough of implemented user stories:
-+![alt text](https://github.com/ppisareva/twitter-client/story1.gif)
-
-+![alt text](https://github.com/ppisareva/twitter-client/caseInternet.gif)
++![alt text](https://github.com/ppisareva/twitter-client/blob/master/story1.gif)
++![alt text](https://github.com/ppisareva/twitter-client/blob/master/caseInternet.gif)
 
 GIF created with [Android Studio].
 
