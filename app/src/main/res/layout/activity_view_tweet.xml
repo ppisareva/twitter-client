@@ -155,13 +155,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:background="@color/light_gray"
         android:layout_gravity="bottom">
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLines="2"
-            android:textSize="@dimen/tweet_retly"
             android:id="@+id/etDetails_ReplyToText"/>
 
 

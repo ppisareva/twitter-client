@@ -9,6 +9,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 
 import com.bumptech.glide.Glide;
 import com.codepath.apps.restclienttemplate.R;
@@ -43,7 +44,9 @@ public class ViewTweetActivity extends AppCompatActivity {
         tweet = getIntent().getParcelableExtra(Utils.TWEET);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_view_tweet);
         binding.etDetailsReplyToText.setEnabled(false);
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("");
         if (tweet.getUser() != null && !TextUtils.isEmpty(tweet.getUser().getProfileImageUrl())) {
             Glide.with(this).load(tweet.getUser().getProfileImageUrl())
                     .placeholder(R.drawable.tw__ic_logo_default)

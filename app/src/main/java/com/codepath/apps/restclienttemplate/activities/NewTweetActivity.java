@@ -36,6 +36,7 @@ public class NewTweetActivity extends AppCompatActivity {
     Tweet tweet = new Tweet();
     String  replyID = "";
     EditText text;
+    SharedPreferences pref;
 
 
     @Override
@@ -45,8 +46,7 @@ public class NewTweetActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_new_tweet);
         user = Application.getUser();
         text = binding.twEditTweet;
-        SharedPreferences pref =
-                PreferenceManager.getDefaultSharedPreferences(this);
+        pref = PreferenceManager.getDefaultSharedPreferences(this);
         text.setText(pref.getString(Utils.TWEET, ""));
         replyID = pref.getString(Utils.ID_REPLY, "");
         binding.twCharCount.setText(MAX_TWEET_LENGHT - text.length()+"");
@@ -97,13 +97,13 @@ public class NewTweetActivity extends AppCompatActivity {
 
             }
         });
-        getSupportActionBar().setTitle(replyID.isEmpty()? getString(R.string.new_tweet): getString(R.string.retweet));
+        getSupportActionBar().setTitle("");
+        getSupportActionBar().setLogo(R.drawable.tw__composer_logo_white);
     }
 
     @Override
     public void finish() {
-        SharedPreferences pref =
-                PreferenceManager.getDefaultSharedPreferences(NewTweetActivity.this);
+
         SharedPreferences.Editor edit = pref.edit();
         edit.putString(Utils.TWEET, binding.twEditTweet.getText().toString());
         edit.putString(Utils.ID_REPLY, replyID);
@@ -130,6 +130,9 @@ public class NewTweetActivity extends AppCompatActivity {
                             Intent data = new Intent();
                             data.putExtra(Utils.TWEET, newTweet);
                             setResult(RESULT_OK, data);
+                            SharedPreferences.Editor edit = pref.edit();
+                            edit.clear();
+                            edit.commit();
                             finish();
                         }
                     } catch (JsonParseException e) {

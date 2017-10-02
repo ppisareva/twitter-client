@@ -10,9 +10,16 @@
 
     <Button
         android:id="@+id/login_button"
+        style="@style/tw__ComposerTweetButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="23sp"
+        android:drawableLeft="@drawable/tw__composer_logo_white"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="35dp"
         android:onClick="loginToRest"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:text="@string/login_label" />
 
 
 </RelativeLayout>
