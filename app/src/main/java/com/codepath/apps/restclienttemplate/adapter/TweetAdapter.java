@@ -145,7 +145,7 @@ public class TweetAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         Tweet tweet = tweetList.get(position);
         viewHolder.position = position;
         viewHolder.setTweet(tweet);
-        if (!TextUtils.isEmpty(tweet.getUser().getProfileImageUrl())) {
+        if (tweet.getUser()!=null&&!TextUtils.isEmpty(tweet.getUser().getProfileImageUrl())) {
             Glide.with(context).load(tweet.getUser().getProfileImageUrl())
                     .fitCenter()
                     .into(viewHolder.ivProfileImage);

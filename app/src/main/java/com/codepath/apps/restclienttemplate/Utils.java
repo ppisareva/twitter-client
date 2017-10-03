@@ -30,6 +30,8 @@ public class Utils {
     public static final String REPLY = "reply";
     public static final String ID_REPLY = "id" ;
     public static final String PHOTO = "photo";
+    public static final CharSequence HOME = "HOME";
+    public static final CharSequence MENTIONS = "MENTIONS";
     public static int MAX_TWEET_LENGHT = 140;
 
     public static Boolean isNetworkAvailable(Context context) {

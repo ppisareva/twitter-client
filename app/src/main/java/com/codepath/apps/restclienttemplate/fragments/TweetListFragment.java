@@ -1,0 +1,227 @@
+package com.codepath.apps.restclienttemplate.fragments;
+
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import com.codepath.apps.restclienttemplate.R;
+import com.codepath.apps.restclienttemplate.Utils;
+import com.codepath.apps.restclienttemplate.adapter.TweetAdapter;
+import com.codepath.apps.restclienttemplate.application.Application;
+import com.codepath.apps.restclienttemplate.data.TweetDatabase;
+import com.codepath.apps.restclienttemplate.data.TwitterClient;
+import com.codepath.apps.restclienttemplate.listener.EndlessRecyclerViewScrollListener;
+import com.codepath.apps.restclienttemplate.models.Tweet;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.loopj.android.http.JsonHttpResponseHandler;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import cz.msebera.android.httpclient.Header;
+
+public class TweetListFragment extends Fragment {
+
+    TwitterClient client;
+    RecyclerView recyclerView;
+    ArrayList<Tweet> tweets= new ArrayList<>();
+    TweetAdapter adapter;
+    LinearLayoutManager linearLayoutManager;
+    SwipeRefreshLayout swipeRefreshLayout;
+    public static final int REQUEST_CODE =1111;
+    boolean firstEnter = false;
+
+
+    int position;
+
+
+
+    public TweetListFragment() {
+    }
+
+    public static TweetListFragment newInstance(int position) {
+        TweetListFragment fragment = new TweetListFragment();
+        Bundle args = new Bundle();
+        args.putInt(Utils.POSITION, position);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (getArguments() != null) {
+            position = getArguments().getInt(Utils.POSITION);
+        }
+        tweets = TweetDatabase.readFromDB();
+        firstEnter = true;
+        System.err.println(" get from database ____________" + tweets);
+        client = Application.getRestClient();
+        loadTimeline(false, true);
+    }
+
+
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_tweetlist_list, container, false);
+
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        linearLayoutManager = new LinearLayoutManager(getActivity());
+        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        adapter = new TweetAdapter(getActivity(), tweets);
+        recyclerView.setAdapter(adapter);
+        recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                loadTimeline(true, false);
+
+            }
+        });
+
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.srlTweet);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                loadTimeline(false,true);
+            }
+        });
+    }
+
+    private void loadTimeline(final Boolean isScrolled, final Boolean isRefreshed) {
+        long maxId =1;
+        long startId = 1;
+        if(!tweets.isEmpty()){
+            maxId = Long.parseLong(tweets.get(tweets.size()-1).getIdStr()) - 1;
+            startId = Long.parseLong(tweets.get(0).getIdStr());
+        }
+
+             switch (position) {
+        case 0:
+            client.getHomeTimeline(isScrolled, isRefreshed, maxId, startId, new JsonHttpResponseHandler(){
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                    TweetListFragment.this.onFailure(throwable, statusCode);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    TweetListFragment.this.onFailure(throwable, statusCode);
+                }
+
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                    TweetListFragment.this.onSuccess(response, isScrolled, isRefreshed);
+                }
+
+            });
+            break;
+        case 1:
+            client.getMentionsTimeline(isScrolled, isRefreshed, maxId, startId, new JsonHttpResponseHandler(){
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                    TweetListFragment.this.onFailure(throwable, statusCode);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    TweetListFragment.this.onFailure(throwable, statusCode);
+                }
+
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                    TweetListFragment.this.onSuccess(response, isScrolled, isRefreshed);
+                }
+
+            });
+           break;
+    }
+
+
+    }
+
+    private void onFailure(Throwable throwable, int statusCode) {
+        throwable.printStackTrace();
+        System.err.println(" statusCode  "+ statusCode);
+        swipeRefreshLayout.setRefreshing(false);
+    }
+
+    private void onSuccess(JSONArray response, final Boolean isScrolled, final Boolean isRefreshed) {
+        List<Tweet> tweetsList = new ArrayList<Tweet>();
+        if (response != null) {
+            System.out.println(" response "+ response);
+            try {
+                Gson gson = new GsonBuilder().create();
+                JsonArray jsonArray = gson.fromJson(response.toString(), JsonArray.class);
+                if (jsonArray != null) {
+                    for (int i = 0; i < jsonArray.size(); i++) {
+                        JsonObject jsonObject = jsonArray.get(i).getAsJsonObject();
+                        if (jsonObject != null) {
+                            tweetsList.add(Tweet.fromJsonObjectToTweet(jsonObject));
+                        }
+                    }
+
+
+                    if(isScrolled) {
+                        tweets.addAll(tweetsList);
+                        TweetDatabase.saveTweets(tweetsList);
+
+                    }
+                    if(isRefreshed){
+                        if(!tweets.isEmpty()) {
+                            if(!firstEnter) {
+                                ArrayList<Tweet> list = new ArrayList<Tweet>();
+                                list.addAll(tweets);
+                                tweets.clear();
+                                tweets.addAll(tweetsList);
+                                tweets.addAll(list);
+                                TweetDatabase.clearDB();
+                                TweetDatabase.saveTweets(list);
+
+                            } else {
+                                TweetDatabase.clearDB();
+                                TweetDatabase.saveTweets(tweetsList);
+                                tweets.clear();
+                                tweets.addAll(tweetsList);
+                            }
+                        } else {
+                            tweets.addAll(tweetsList);
+                            TweetDatabase.clearDB();
+                            TweetDatabase.saveTweets(tweetsList);
+                        }
+                        swipeRefreshLayout.setRefreshing(false);
+                        linearLayoutManager.scrollToPosition(0);
+
+                    }
+                    adapter.notifyDataSetChanged();
+                    firstEnter = false;
+                }
+            } catch (JsonParseException e) {
+                Log.d("Async onSuccess", "Json parsing error:" + e.getMessage(), e);
+            }
+        }
+    }
+}

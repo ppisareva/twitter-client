@@ -19,6 +19,7 @@
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>
@@ -37,7 +38,11 @@
             android:label="@string/title_activity_tweets_list"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activities.NewTweetActivity" />
-        <activity android:name=".activities.ViewTweetActivity"></activity>
+        <activity android:name=".activities.ViewTweetActivity" />
+        <activity
+            android:name=".activities.ListOfTweetsActivity"
+            android:label="@string/title_activity_list_of_tweets"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
