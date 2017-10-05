@@ -127,5 +127,11 @@ public class TwitterClient extends OAuthBaseClient {
         String apiUrl = getApiUrl("favorites/" + endpoint + ".json?id=" + tweetId);
         client.post(apiUrl, null, handler);
     }
+    public void isFriends(String userId, boolean isFriends, JsonHttpResponseHandler handler) {
+        String endpoint = isFriends ? "create" : "destroy";
+        String apiUrl = getApiUrl("friendships/" + endpoint + ".json?id=" + userId);
+        client.post(apiUrl, null, handler);
+    }
+
 
 }

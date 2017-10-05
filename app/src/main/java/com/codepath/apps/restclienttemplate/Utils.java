@@ -69,11 +69,12 @@ public class Utils {
             e.printStackTrace();
         }
         System.err.println("Time " + relativeDate);
-        return shortFormat(relativeDate);
+        return relativeDate;
     }
 
 
     public static String shortFormat(String input) {
+
         String[] parts = input.split(" ");
 
         String numericPart ="";

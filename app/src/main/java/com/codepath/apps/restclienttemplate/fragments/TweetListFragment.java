@@ -47,6 +47,8 @@ public class TweetListFragment extends Fragment {
     SwipeRefreshLayout swipeRefreshLayout;
     public static final int REQUEST_CODE =1111;
     boolean firstEnter = false;
+    boolean isUserTweets;
+    String userID = "";
 
 
     int position;
@@ -56,10 +58,14 @@ public class TweetListFragment extends Fragment {
     public TweetListFragment() {
     }
 
-    public static TweetListFragment newInstance(int position) {
+    public static TweetListFragment newInstance(int position, Boolean isUserTweets, String userId) {
         TweetListFragment fragment = new TweetListFragment();
         Bundle args = new Bundle();
+        if(userId!=null){
+            args.putString(Utils.USER_ID, userId);
+        }
         args.putInt(Utils.POSITION, position);
+        args.putBoolean(Utils.USER, isUserTweets);
         fragment.setArguments(args);
         return fragment;
     }
@@ -69,13 +75,18 @@ public class TweetListFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
+
             position = getArguments().getInt(Utils.POSITION);
+            isUserTweets = getArguments().getBoolean(Utils.USER);
+            if(getArguments().containsKey(Utils.USER_ID)){
+                userID = getArguments().getString(Utils.USER_ID, "");
+            }
         }
-        tweets = TweetDatabase.readFromDB();
+       // tweets = TweetDatabase.readFromDB();
         firstEnter = true;
         System.err.println(" get from database ____________" + tweets);
         client = Application.getRestClient();
-        loadTimeline(false, true);
+        loadTimeline(false, true , isUserTweets);
     }
 
 
@@ -98,7 +109,7 @@ public class TweetListFragment extends Fragment {
         recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-                loadTimeline(true, false);
+                loadTimeline(true, false, isUserTweets);
 
             }
         });
@@ -107,12 +118,12 @@ public class TweetListFragment extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                loadTimeline(false,true);
+                loadTimeline(false,true, isUserTweets);
             }
         });
     }
 
-    private void loadTimeline(final Boolean isScrolled, final Boolean isRefreshed) {
+    private void loadTimeline(final Boolean isScrolled, final Boolean isRefreshed, boolean isUserTweets) {
         long maxId =1;
         long startId = 1;
         if(!tweets.isEmpty()){
@@ -122,45 +133,88 @@ public class TweetListFragment extends Fragment {
 
              switch (position) {
         case 0:
-            client.getHomeTimeline(isScrolled, isRefreshed, maxId, startId, new JsonHttpResponseHandler(){
+            if(isUserTweets){
+                client.getUserTimeline(isScrolled, isRefreshed, userID, maxId, startId, new JsonHttpResponseHandler(){
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    TweetListFragment.this.onFailure(throwable, statusCode);
-                }
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                        TweetListFragment.this.onFailure(throwable, statusCode);
+                    }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    TweetListFragment.this.onFailure(throwable, statusCode);
-                }
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                        TweetListFragment.this.onFailure(throwable, statusCode);
+                    }
 
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                    TweetListFragment.this.onSuccess(response, isScrolled, isRefreshed);
-                }
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                        TweetListFragment.this.onSuccess(response, isScrolled, isRefreshed);
+                    }
 
-            });
+                });
+            } else {
+                client.getHomeTimeline(isScrolled, isRefreshed, maxId, startId, new JsonHttpResponseHandler() {
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                        TweetListFragment.this.onFailure(throwable, statusCode);
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                        TweetListFragment.this.onFailure(throwable, statusCode);
+                    }
+
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                        TweetListFragment.this.onSuccess(response, isScrolled, isRefreshed);
+                    }
+
+                });
+            }
             break;
         case 1:
-            client.getMentionsTimeline(isScrolled, isRefreshed, maxId, startId, new JsonHttpResponseHandler(){
+            if(isUserTweets){
+                client.getUserFavourite(isScrolled, isRefreshed, userID, maxId, startId, new JsonHttpResponseHandler(){
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    TweetListFragment.this.onFailure(throwable, statusCode);
-                }
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                        TweetListFragment.this.onFailure(throwable, statusCode);
+                    }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    TweetListFragment.this.onFailure(throwable, statusCode);
-                }
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                        TweetListFragment.this.onFailure(throwable, statusCode);
+                    }
 
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                    TweetListFragment.this.onSuccess(response, isScrolled, isRefreshed);
-                }
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                        TweetListFragment.this.onSuccess(response, isScrolled, isRefreshed);
+                    }
 
-            });
+                });
+            } else {
+                client.getMentionsTimeline(isScrolled, isRefreshed, maxId, startId, new JsonHttpResponseHandler() {
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                        TweetListFragment.this.onFailure(throwable, statusCode);
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                        TweetListFragment.this.onFailure(throwable, statusCode);
+                    }
+
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                        TweetListFragment.this.onSuccess(response, isScrolled, isRefreshed);
+                    }
+
+                });
+            }
            break;
+
     }
 
 

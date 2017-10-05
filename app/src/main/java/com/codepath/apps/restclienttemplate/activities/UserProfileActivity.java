@@ -5,6 +5,8 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -39,6 +41,7 @@ public class UserProfileActivity extends AppCompatActivity {
     TextView description;
     TextView followers;
     TextView following;
+    ImageButton addUser;
 
 
 
@@ -53,19 +56,24 @@ public class UserProfileActivity extends AppCompatActivity {
         description = (TextView) findViewById(R.id.userDescription);
         followers = (TextView) findViewById(R.id.userFollowers);
         following = (TextView) findViewById(R.id.userFollowing);
+        addUser = (ImageButton)findViewById(R.id.userAddButton);
+
         client = Application.getRestClient();
         user = Application.getUser();
 
 
         if(getIntent().getBooleanExtra(Utils.IS_ME, true)){
             user = Application.getUser();
+            userId = user.getUser_id()+"";
             initView();
+            addUser.setVisibility(View.GONE);
+
         } else {
             userId = getIntent().getStringExtra(Utils.USER_ID);
             getUser(userId);
         }
 
-        mSectionsPagerAdapter = new SectionsUserContentAdapter(getSupportFragmentManager());
+        mSectionsPagerAdapter = new SectionsUserContentAdapter(getSupportFragmentManager(), userId);
         mViewPager = (ViewPager) findViewById(R.id.userContainer);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.userTabs);
@@ -73,6 +81,7 @@ public class UserProfileActivity extends AppCompatActivity {
     }
 
     private void initView() {
+        initImageAdd(user.getFollowing());
         Glide.with(this).load(user.getBackgroundImageUrl())
                 .placeholder(R.drawable.tw__ic_logo_default)
                 .centerCrop()
@@ -88,6 +97,26 @@ public class UserProfileActivity extends AppCompatActivity {
         followers.setText(user.getFollowersCount() + " " + getString(R.string.followers));
     }
 
+    public void onAddNewUser(View v){
+        final boolean isFriends = !user.getFollowing();
+        client.isFriends(userId, isFriends,  new JsonHttpResponseHandler(){
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                System.err.println( " tweet was liked");
+               initImageAdd(isFriends);
+            }
+        });
+    }
+
+    private void initImageAdd(boolean isFriends) {
+        if(isFriends) {
+            addUser.setImageDrawable(getResources().getDrawable(R.drawable.ic_added_user_vector));
+        } else {
+            addUser.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_user_vector));
+        }
+    }
+
+
     private void getUser(String userId) {
         client.getUser(userId, new JsonHttpResponseHandler(){
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -102,5 +131,7 @@ public class UserProfileActivity extends AppCompatActivity {
             }
         });
     }
+
+
 
 }

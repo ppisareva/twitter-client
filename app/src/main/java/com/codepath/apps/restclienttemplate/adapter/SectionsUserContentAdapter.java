@@ -12,18 +12,21 @@ import com.codepath.apps.restclienttemplate.fragments.TweetListFragment;
  */
 
 public class SectionsUserContentAdapter extends FragmentPagerAdapter {
+    boolean isUserTweets= true;
+    String userId;
 
-    public SectionsUserContentAdapter(FragmentManager fm) {
+    public SectionsUserContentAdapter(FragmentManager fm, String userId) {
         super(fm);
+        this.userId = userId;
     }
 
     @Override
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return TweetListFragment.newInstance(position);
+                return TweetListFragment.newInstance(position, isUserTweets , userId);
             case 1:
-                return TweetListFragment.newInstance(position);
+                return TweetListFragment.newInstance(position, isUserTweets, userId);
         }
         return null;
     }
