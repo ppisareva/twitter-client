@@ -1,5 +1,6 @@
 package com.codepath.apps.restclienttemplate.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -33,6 +34,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
+
+import static android.app.Activity.RESULT_OK;
 
 public class TweetListFragment extends Fragment {
 
@@ -90,7 +93,7 @@ public class TweetListFragment extends Fragment {
         linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(linearLayoutManager);
-        adapter = new TweetAdapter(getActivity(), tweets);
+        adapter = new TweetAdapter(this, tweets);
         recyclerView.setAdapter(adapter);
         recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearLayoutManager) {
             @Override
@@ -160,6 +163,35 @@ public class TweetListFragment extends Fragment {
            break;
     }
 
+
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
+            Tweet tweet = (Tweet) data.getExtras().get(Utils.TWEET);
+            tweets.add(0, tweet);
+            adapter.notifyItemRangeInserted(0,1);
+            linearLayoutManager.scrollToPosition(0);
+        }
+
+        if (resultCode == RESULT_OK && requestCode == Utils.VIEW_TWEET_REQUEST) {
+            int position = data.getIntExtra(Utils.POSITION, -1);
+            if (data.hasExtra(Utils.FAVORITE)) {
+                tweets.get(position).setFavorited(data.getBooleanExtra(Utils.FAVORITE, false));
+            }
+            if (data.hasExtra(Utils.RETWEET)) {
+                tweets.get(position).setRetweeted(data.getBooleanExtra(Utils.RETWEET, false));
+            }
+            if (data.hasExtra(Utils.REPLY)) {
+                adapter.notifyItemChanged(position);
+                tweets.add(0, (Tweet) data.getParcelableExtra(Utils.REPLY));
+                adapter.notifyItemInserted(0);
+            }
+            adapter.notifyItemChanged(position);
+        }
 
     }
 

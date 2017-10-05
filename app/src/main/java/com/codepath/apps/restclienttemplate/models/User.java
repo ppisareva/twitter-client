@@ -22,6 +22,11 @@ public class User extends BaseModel implements Parcelable  {
     public static final String NAME = "name";
     public static final String SCREEN_NAME = "screen_name";
     public static final String PROFILE_IMAGE_URL = "profile_image_url";
+    public static final String PROFILE_BACKGROUND_IMAGE_URL = "profile_banner_url";
+    public static final String DESCRIPTION = "description";
+    public static final String FOLLOWERS_COUNT = "followers_count";
+    public static final String FRIENDS_COUNT = "friends_count";
+    public static final String IS_FRIEND = "following";
 
     @Column(name = "UserId")
     @PrimaryKey
@@ -38,6 +43,62 @@ public class User extends BaseModel implements Parcelable  {
 
     @Column(name = "ProfileImageUrl")
     private String profileImageUrl;
+
+    public String getBackgroundImageUrl() {
+        return backgroundImageUrl;
+    }
+
+    public void setBackgroundImageUrl(String backgroundImageUrl) {
+        this.backgroundImageUrl = backgroundImageUrl;
+    }
+
+    private String backgroundImageUrl;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+
+    private String description;
+
+    private String followersCount;
+
+    private String followingsCount;
+
+    private Boolean following;
+
+
+    public String getFollowersCount() {
+        return followersCount;
+    }
+
+    public void setFollowersCount(String followersCount) {
+        this.followersCount = followersCount;
+    }
+
+    public String getFollowingsCount() {
+        return followingsCount;
+    }
+
+    public void setFollowingsCount(String followingsCount) {
+        this.followingsCount = followingsCount;
+    }
+
+    public Boolean getFollowing() {
+        return following;
+    }
+
+    public void setFollowing(Boolean following) {
+        this.following = following;
+    }
+
+
+
+
 
     public User() {
         super();
@@ -98,9 +159,24 @@ public class User extends BaseModel implements Parcelable  {
         if (jsonUserObject.has(PROFILE_IMAGE_URL)) {
             user.setProfileImageUrl(jsonUserObject.get(PROFILE_IMAGE_URL).getAsString());
         }
-
+        if (jsonUserObject.has(DESCRIPTION)) {
+            user.setDescription(jsonUserObject.get(DESCRIPTION).getAsString());
+        }
+        if (jsonUserObject.has(FOLLOWERS_COUNT)) {
+            user.setFollowersCount(jsonUserObject.get(FOLLOWERS_COUNT).getAsString());
+        }
+        if (jsonUserObject.has(FRIENDS_COUNT)) {
+            user.setFollowingsCount(jsonUserObject.get(FRIENDS_COUNT).getAsString());
+        }
+        if (jsonUserObject.has(IS_FRIEND)) {
+            user.setFollowing(jsonUserObject.get(IS_FRIEND).getAsBoolean());
+        }
+        if (jsonUserObject.has(PROFILE_BACKGROUND_IMAGE_URL)) {
+            user.setBackgroundImageUrl(jsonUserObject.get(PROFILE_BACKGROUND_IMAGE_URL).getAsString());
+        }
         return user;
     }
+
 
     @Override
     public int describeContents() {
@@ -109,24 +185,38 @@ public class User extends BaseModel implements Parcelable  {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.user_id);
         dest.writeString(this.idStr);
         dest.writeString(this.userName);
         dest.writeString(this.screenName);
         dest.writeString(this.profileImageUrl);
+        dest.writeString(this.backgroundImageUrl);
+        dest.writeString(this.description);
+        dest.writeString(this.followersCount);
+        dest.writeString(this.followingsCount);
+        dest.writeValue(this.following);
     }
 
     protected User(Parcel in) {
+        this.user_id = in.readLong();
         this.idStr = in.readString();
         this.userName = in.readString();
         this.screenName = in.readString();
         this.profileImageUrl = in.readString();
+        this.backgroundImageUrl = in.readString();
+        this.description = in.readString();
+        this.followersCount = in.readString();
+        this.followingsCount = in.readString();
+        this.following = (Boolean) in.readValue(Boolean.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
         public User createFromParcel(Parcel source) {
             return new User(source);
         }
 
+        @Override
         public User[] newArray(int size) {
             return new User[size];
         }

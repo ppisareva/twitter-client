@@ -32,6 +32,10 @@ public class Utils {
     public static final String PHOTO = "photo";
     public static final CharSequence HOME = "HOME";
     public static final CharSequence MENTIONS = "MENTIONS";
+    public static final String IS_ME = "isMe";
+    public static final String USER_ID = "user_id";
+    public static final CharSequence TWEETS = "tweets";
+    public static final CharSequence LIKES = "likes";
     public static int MAX_TWEET_LENGHT = 140;
 
     public static Boolean isNetworkAvailable(Context context) {

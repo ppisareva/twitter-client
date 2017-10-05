@@ -4,15 +4,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.codepath.apps.restclienttemplate.R;
-import com.codepath.apps.restclienttemplate.Utils;
 import com.codepath.apps.restclienttemplate.adapter.SectionsPagerAdapter;
 import com.codepath.apps.restclienttemplate.adapter.TweetAdapter;
 import com.codepath.apps.restclienttemplate.data.TwitterClient;
@@ -30,7 +33,7 @@ public class TweetsListActivity extends AppCompatActivity  {
     public static final int REQUEST_CODE =1111;
     boolean firstEnter = false;
 
-    private SectionsPagerAdapter mSectionsPagerAdapter;
+    private FragmentPagerAdapter mSectionsPagerAdapter;
 
     private ViewPager mViewPager;
 
@@ -62,32 +65,26 @@ public class TweetsListActivity extends AppCompatActivity  {
         });
     }
 
+
+
+
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
-            Tweet tweet = (Tweet) data.getExtras().get(Utils.TWEET);
-            tweets.add(0, tweet);
-            adapter.notifyItemRangeInserted(0,1);
-            linearLayoutManager.scrollToPosition(0);
-        }
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_list_of_tweets, menu);
+        return true;
+    }
 
-        if (resultCode == RESULT_OK && requestCode == Utils.VIEW_TWEET_REQUEST) {
-            int position = data.getIntExtra(Utils.POSITION, -1);
-            if (data.hasExtra(Utils.FAVORITE)) {
-                tweets.get(position).setFavorited(data.getBooleanExtra(Utils.FAVORITE, false));
-            }
-            if (data.hasExtra(Utils.RETWEET)) {
-                tweets.get(position).setRetweeted(data.getBooleanExtra(Utils.RETWEET, false));
-            }
-            if (data.hasExtra(Utils.REPLY)) {
-                adapter.notifyItemChanged(position);
-                tweets.add(0, (Tweet) data.getParcelableExtra(Utils.REPLY));
-                adapter.notifyItemInserted(0);
-            }
-            adapter.notifyItemChanged(position);
-        }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.user_profile:
+                startActivity(new Intent(TweetsListActivity.this, UserProfileActivity.class));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 }

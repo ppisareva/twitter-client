@@ -11,11 +11,12 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
+
 import com.bumptech.glide.Glide;
 import com.codepath.apps.restclienttemplate.R;
-import com.codepath.apps.restclienttemplate.data.TwitterClient;
 import com.codepath.apps.restclienttemplate.Utils;
 import com.codepath.apps.restclienttemplate.application.Application;
+import com.codepath.apps.restclienttemplate.data.TwitterClient;
 import com.codepath.apps.restclienttemplate.databinding.ActivityNewTweetBinding;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 import com.codepath.apps.restclienttemplate.models.User;
@@ -24,6 +25,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.loopj.android.http.TextHttpResponseHandler;
+
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.util.TextUtils;
 

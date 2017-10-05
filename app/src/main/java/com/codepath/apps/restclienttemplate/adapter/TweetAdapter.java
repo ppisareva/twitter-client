@@ -1,7 +1,7 @@
 package com.codepath.apps.restclienttemplate.adapter;
 
-import android.app.Activity;
 import android.content.Intent;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -12,12 +12,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.codepath.apps.restclienttemplate.activities.NewTweetActivity;
 import com.codepath.apps.restclienttemplate.R;
-import com.codepath.apps.restclienttemplate.data.TwitterClient;
 import com.codepath.apps.restclienttemplate.Utils;
+import com.codepath.apps.restclienttemplate.activities.NewTweetActivity;
+import com.codepath.apps.restclienttemplate.activities.UserProfileActivity;
 import com.codepath.apps.restclienttemplate.activities.ViewTweetActivity;
 import com.codepath.apps.restclienttemplate.application.Application;
+import com.codepath.apps.restclienttemplate.data.TwitterClient;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -35,7 +36,7 @@ public class TweetAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
 
     private List<Tweet> tweetList;
-    private Activity context;
+    private Fragment fragment;
 
     private final int TWEET_NO_IMAGE = 0;
     private final int TWEET_IMAGE = 1;
@@ -43,9 +44,9 @@ public class TweetAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public static final int NEW_TWEET_CODE =1111;
     TwitterClient client;
 
-    public TweetAdapter(Activity context, List<Tweet> tweets) {
+    public TweetAdapter(Fragment fragment, List<Tweet> tweets) {
         tweetList = tweets;
-        this.context = context;
+        this.fragment = fragment;
     }
 
 
@@ -117,24 +118,24 @@ public class TweetAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         viewHolder.twName.setText(tweet.getUser().getUserName());
         viewHolder.twScreenName.setText("@" + tweet.getUser().getScreenName());
         if(tweet.isFavorited()){
-            viewHolder.ibLike.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_like_vector_true));
+            viewHolder.ibLike.setImageDrawable(fragment.getResources().getDrawable(R.drawable.ic_like_vector_true));
         } else {
-            viewHolder.ibLike.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_like_vector));
+            viewHolder.ibLike.setImageDrawable(fragment.getResources().getDrawable(R.drawable.ic_like_vector));
         }
 
         if(tweet.isRetweeted()){
-            viewHolder.ibRetweet.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_retweet_vector_true));
+            viewHolder.ibRetweet.setImageDrawable(fragment.getResources().getDrawable(R.drawable.ic_retweet_vector_true));
         } else {
-            viewHolder.ibRetweet.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_retweet_vector));
+            viewHolder.ibRetweet.setImageDrawable(fragment.getResources().getDrawable(R.drawable.ic_retweet_vector));
         }
         if (!TextUtils.isEmpty(tweet.getUser().getProfileImageUrl())) {
-            Glide.with(context).load(tweet.getUser().getProfileImageUrl())
+            Glide.with(fragment).load(tweet.getUser().getProfileImageUrl())
                     .fitCenter()
                     .into(viewHolder.ivProfileImage);
         }
 
         viewHolder.timeStamp.setText(Utils.getRelativeTimeAgo(tweet.getCreated_at()));
-        Glide.with(context).load(tweet.getMedia_url())
+        Glide.with(fragment).load(tweet.getMedia_url())
                 .centerCrop()
                 .into(viewHolder.ivImage);
 
@@ -146,7 +147,7 @@ public class TweetAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         viewHolder.position = position;
         viewHolder.setTweet(tweet);
         if (tweet.getUser()!=null&&!TextUtils.isEmpty(tweet.getUser().getProfileImageUrl())) {
-            Glide.with(context).load(tweet.getUser().getProfileImageUrl())
+            Glide.with(fragment).load(tweet.getUser().getProfileImageUrl())
                     .fitCenter()
                     .into(viewHolder.ivProfileImage);
         }
@@ -156,15 +157,15 @@ public class TweetAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         viewHolder.twScreenName.setText("@" + tweet.getUser().getScreenName());
         viewHolder.timeStamp.setText(Utils.getRelativeTimeAgo(tweet.getCreated_at()));
         if(tweet.isFavorited()){
-            viewHolder.ibLike.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_like_vector_true));
+            viewHolder.ibLike.setImageDrawable(fragment.getResources().getDrawable(R.drawable.ic_like_vector_true));
         } else {
-            viewHolder.ibLike.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_like_vector));
+            viewHolder.ibLike.setImageDrawable(fragment.getResources().getDrawable(R.drawable.ic_like_vector));
         }
 
         if(tweet.isRetweeted()){
-            viewHolder.ibRetweet.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_retweet_vector_true));
+            viewHolder.ibRetweet.setImageDrawable(fragment.getResources().getDrawable(R.drawable.ic_retweet_vector_true));
         } else {
-            viewHolder.ibRetweet.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_retweet_vector));
+            viewHolder.ibRetweet.setImageDrawable(fragment.getResources().getDrawable(R.drawable.ic_retweet_vector));
         }
     }
 
@@ -211,6 +212,7 @@ public class TweetAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             super(view);
             view.setOnClickListener(this);
             ivProfileImage = (ImageView) view.findViewById(R.id.imgProfile);
+            ivProfileImage.setOnClickListener(this);
             twName = (TextView) view.findViewById(R.id.tvName);
             twScreenName = (TextView) view.findViewById(R.id.tvScreenName);
             tvTweet = (TextView) view.findViewById(R.id.tvTweet);
@@ -231,9 +233,15 @@ public class TweetAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             client = Application.getRestClient();
             switch (v.getId()){
                 case R.id.btnReply:
-                    Intent intent = new Intent(context, NewTweetActivity.class);
+                    Intent intent = new Intent(fragment.getContext(), NewTweetActivity.class);
                     intent.putExtra(Utils.TWEET, tweet);
-                    context.startActivityForResult(intent, NEW_TWEET_CODE);
+                    fragment.startActivityForResult(intent, NEW_TWEET_CODE);
+                    break;
+                case R.id.imgProfile:
+                    Intent intentUser = new Intent(fragment.getContext(), UserProfileActivity.class);
+                    intentUser.putExtra(Utils.IS_ME, false);
+                    intentUser.putExtra(Utils.USER_ID, tweet.getUser_id()+"");
+                    fragment.startActivity(intentUser);
                     break;
                 case R.id.btnRetweet:
                     final Boolean isRetweet = !tweet.isRetweeted();
@@ -243,18 +251,18 @@ public class TweetAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                             System.err.println( " tweet was retweeted");
                             if(isRetweet) {
-                                ibRetweet.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_retweet_vector_true));
+                                ibRetweet.setImageDrawable(fragment.getResources().getDrawable(R.drawable.ic_retweet_vector_true));
                             } else {
-                                ibRetweet.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_retweet_vector));
+                                ibRetweet.setImageDrawable(fragment.getResources().getDrawable(R.drawable.ic_retweet_vector));
                             }
                         }
                     });
                     break;
                 case R.id.tweet_item:
-                    Intent inten = new Intent(context, ViewTweetActivity.class);
+                    Intent inten = new Intent(fragment.getContext(), ViewTweetActivity.class);
                     inten.putExtra(Utils.TWEET, tweet);
                     inten.putExtra(Utils.POSITION, position);
-                    context.startActivityForResult(inten, Utils.VIEW_TWEET_REQUEST);
+                    fragment.startActivityForResult(inten, Utils.VIEW_TWEET_REQUEST);
                     break;
                 case R.id.btnLike:
                     final boolean isLiked = !tweet.isFavorited();
@@ -264,9 +272,9 @@ public class TweetAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                             System.err.println( " tweet was liked");
                             if(isLiked) {
-                                ibLike.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_like_vector_true));
+                                ibLike.setImageDrawable(fragment.getResources().getDrawable(R.drawable.ic_like_vector_true));
                             } else {
-                                ibLike.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_like_vector));
+                                ibLike.setImageDrawable(fragment.getResources().getDrawable(R.drawable.ic_like_vector));
                             }
                         }
                     });
