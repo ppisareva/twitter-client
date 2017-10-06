@@ -23,6 +23,7 @@
     <string name="title_activity_user_profile">UserProfileActivity</string>
     <string name="following"> following </string>
     <string name="followers">followers</string>
+    <string name="title_activity_followers">Followers</string>
 
 
 </resources>

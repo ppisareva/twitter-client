@@ -1,5 +1,6 @@
 package com.codepath.apps.restclienttemplate.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -97,6 +98,19 @@ public class UserProfileActivity extends AppCompatActivity {
         followers.setText(user.getFollowersCount() + " " + getString(R.string.followers));
     }
 
+    public void onFollowers(View v){
+        Intent intent = new Intent(UserProfileActivity.this, FollowersActivity.class);
+        intent.putExtra(Utils.USER_ID, userId);
+        intent.putExtra(Utils.IS_FOLLOWERS, true);
+        startActivity(intent);
+    }
+
+    public  void onFollowing (View v){
+        Intent intent = new Intent(UserProfileActivity.this, FollowersActivity.class);
+        intent.putExtra(Utils.USER_ID, userId);
+        intent.putExtra(Utils.IS_FOLLOWERS, false);
+        startActivity(intent);
+    }
     public void onAddNewUser(View v){
         final boolean isFriends = !user.getFollowing();
         client.isFriends(userId, isFriends,  new JsonHttpResponseHandler(){

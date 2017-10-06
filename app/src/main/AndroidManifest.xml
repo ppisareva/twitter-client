@@ -46,6 +46,10 @@
         <activity
             android:name=".activities.UserProfileActivity"
             android:label="@string/title_activity_user_profile"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.FollowersActivity"
+            android:label="@string/title_activity_followers"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

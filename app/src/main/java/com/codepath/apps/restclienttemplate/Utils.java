@@ -36,6 +36,7 @@ public class Utils {
     public static final String USER_ID = "user_id";
     public static final CharSequence TWEETS = "tweets";
     public static final CharSequence LIKES = "likes";
+    public static final String IS_FOLLOWERS = "is_followers";
     public static int MAX_TWEET_LENGHT = 140;
 
     public static Boolean isNetworkAvailable(Context context) {
