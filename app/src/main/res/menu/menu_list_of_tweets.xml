@@ -4,8 +4,14 @@
     tools:fragment="com.codepath.apps.restclienttemplate.activities.TweetsListActivity">
 
     <item android:id="@+id/user_profile"
-        android:title="@string/action_settings"
+        android:title="@string/user_profile"
         app:showAsAction="ifRoom"
-        android:icon="@drawable/tw__composer_logo_white"/>
+        android:icon="@drawable/ic_user_vector"/>
+    <item android:id="@+id/action_search"
+        android:orderInCategory="5"
+        android:title="Search"
+        android:icon="@drawable/ic_search"
+        app:showAsAction="always|collapseActionView"
+        app:actionViewClass="android.support.v7.widget.SearchView" />
 
 </menu>

@@ -38,6 +38,7 @@ public class Utils {
     public static final CharSequence LIKES = "likes";
     public static final String IS_FOLLOWERS = "is_followers";
     public static int MAX_TWEET_LENGHT = 140;
+    public static String SEARCH ="search";
 
     public static Boolean isNetworkAvailable(Context context) {
         ConnectivityManager connectivityManager

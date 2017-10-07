@@ -58,6 +58,7 @@ public class TweetListFragment extends Fragment {
     public TweetListFragment() {
     }
 
+
     public static TweetListFragment newInstance(int position, Boolean isUserTweets, String userId) {
         TweetListFragment fragment = new TweetListFragment();
         Bundle args = new Bundle();

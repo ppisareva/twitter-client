@@ -39,10 +39,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activities.NewTweetActivity" />
         <activity android:name=".activities.ViewTweetActivity" />
-        <activity
-            android:name=".activities.ListOfTweetsActivity"
-            android:label="@string/title_activity_list_of_tweets"
-            android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".activities.UserProfileActivity"
             android:label="@string/title_activity_user_profile"
@@ -50,7 +47,10 @@
         <activity
             android:name=".activities.FollowersActivity"
             android:label="@string/title_activity_followers"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".activities.SearchResultActivity"
+            android:noHistory="true"
+            ></activity>
     </application>
 
 </manifest>
