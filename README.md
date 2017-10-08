@@ -2,7 +2,7 @@
 
 **Twitter Client** is an android app that allows a user to view his Twitter timeline and post a new tweet. The app utilizes [Twitter REST API](https://developer.twitter.com/en/docs/api-reference-index).
 
-Time spent: 20 hours spent in total
+Time spent: 30 hours spent in total
 
 ## User Stories
 
@@ -76,6 +76,7 @@ The following **additional** features are implemented:
 Here's a walkthrough of implemented user stories:
 +![alt text](https://github.com/ppisareva/twitter-client/blob/master/story1.gif)
 +![alt text](https://github.com/ppisareva/twitter-client/blob/master/caseInternet.gif)
++![alt text](https://github.com/ppisareva/twitter-client/blob/master/ezgif.com-video-to-gif%20(1).gif)
 
 GIF created with [Android Studio].
 
